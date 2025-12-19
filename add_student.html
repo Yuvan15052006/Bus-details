@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Connect - Add Student</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- REUSING DASHBOARD STYLES --- */
+        :root {
+            --primary-color: #ff6b6b; --sidebar-bg: #2c3e50;
+            --text-light: #ecf0f1; --bg-color: #f4f7f6; --card-bg: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; min-height: 100vh; background-color: var(--bg-color); }
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--text-light); display: flex; flex-direction: column; position: fixed; height: 100%; }
+        .logo { padding: 20px; text-align: center; font-size: 22px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo i { color: var(--primary-color); }
+        .menu { list-style: none; margin-top: 20px; }
+        .menu li a { display: flex; align-items: center; padding: 15px 25px; color: #b0c4de; text-decoration: none; transition: 0.3s; }
+        .menu li a:hover, .menu li a.active { background-color: var(--primary-color); color: white; }
+        .menu li a i { width: 25px; margin-right: 10px; }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h2 { color: #444; }
+
+        /* --- NEW FORM STYLES --- */
+        .form-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 800px; /* Limits form width for better look */
+            margin: 0 auto; /* Centers the form */
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* Styling inputs to match login page style */
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        /* Select dropdown styling */
+        select.form-control {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23333%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.8-9.2-5.4-12.8z%27%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+            appearance: none; /* Removes default browser arrow */
+            padding-right: 40px;
+        }
+
+        .submit-btn {
+            padding: 15px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #e65555;
+        }
+        
+        .form-row { display: flex; gap: 20px; }
+        .col-half { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-bus"></i> <span>Bus Connect</span></div>
+        <ul class="menu">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+            <li><a href="add_student.html" class="active"><i class="fa-solid fa-user-graduate"></i> <span>Student Details</span></a></li>
+            <li><a href="routes.html"><i class="fa-solid fa-route"></i> <span>Routes</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-clock"></i> <span>Time Schedule</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> <span>Fees</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h2><i class="fa-solid fa-user-plus"></i> Register New Student</h2>
+        </div>
+
+        <div class="form-card">
+            <form action="#" method="POST">
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <div style="position: relative;">
+                        <input type="text" id="fullName" class="form-control" placeholder="Enter student name" required>
+                        <i class="fa-solid fa-user" style="position: absolute; right: 15px; top: 15px; color: #ccc;"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-half form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" class="form-control" required>
+                    </div>
+                    <div class="col-half form-group">
+                        <label for="email">Email Address</label>
+                         <div style="position: relative;">
+                            <input type="email" id="email" class="form-control" placeholder="student@example.com" required>
+                            <i class="fa-solid fa-envelope" style="position: absolute; right: 15px; top: 15px; color: #ccc;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="captain">Student Captain (Capstan) Status</label>
+                    <select id="captain" class="form-control">
+                        <option value="no">No - Regular Student</option>
+                        <option value="yes">Yes - Assign as Bus Captain</option>
+                    </select>
+                    <p style="font-size: 12px; color: #888; margin-top: 5px;">Captains are responsible for attendance on their route.</p>
+                </div>
+
+                <button type="submit" class="submit-btn">Register Student</button>
+
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
