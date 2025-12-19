@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Connect - Routes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- REUSING DASHBOARD STYLES --- */
+        :root {
+            --primary-color: #ff6b6b; --sidebar-bg: #2c3e50;
+            --text-light: #ecf0f1; --bg-color: #f4f7f6; --card-bg: #ffffff;
+            --route-line: #3498db; /* Blue for the route path */
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; min-height: 100vh; background-color: var(--bg-color); }
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--text-light); display: flex; flex-direction: column; position: fixed; height: 100%; }
+        .logo { padding: 20px; text-align: center; font-size: 22px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo i { color: var(--primary-color); }
+        .menu { list-style: none; margin-top: 20px; }
+        .menu li a { display: flex; align-items: center; padding: 15px 25px; color: #b0c4de; text-decoration: none; transition: 0.3s; }
+        .menu li a:hover, .menu li a.active { background-color: var(--primary-color); color: white; }
+        .menu li a i { width: 25px; margin-right: 10px; }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h2 { color: #444; }
+
+        /* --- NEW ROUTE MAPPING STYLES --- */
+        .routes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .route-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .route-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .route-header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .route-body {
+            padding: 30px 20px;
+        }
+
+        /* --- The CSS "Graphic" Image --- */
+        .map-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        /* The Points (Circles) */
+        .map-point {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--route-line);
+            z-index: 2; /* Sit on top of the line */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--route-line);
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* The start point looks different */
+        .map-point.start {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* The connecting line */
+        .map-line {
+            width: 6px;
+            height: 80px; /* Length of the route visually */
+            background: #e0e0e0;
+            position: relative;
+            margin: -5px 0; /* Overlap slightly with circles */
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Animated dashed line inside */
+        .map-line::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(to bottom, var(--route-line), var(--route-line) 10px, transparent 10px, transparent 20px);
+            animation: moveRoute 2s linear infinite;
+        }
+
+        @keyframes moveRoute {
+            from { transform: translateY(-20px); }
+            to { transform: translateY(0px); }
+        }
+
+        /* Location Labels */
+        .location-label {
+            font-weight: 700;
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .location-label.end { color: var(--route-line); }
+
+        .route-details {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+        }
+        .route-details i { color: var(--primary-color); margin-right: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-bus"></i> <span>Bus Connect</span></div>
+        <ul class="menu">
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+            <li><a href="add_student.html"><i class="fa-solid fa-user-graduate"></i> <span>Student Details</span></a></li>
+            <li><a href="routes.html" class="active"><i class="fa-solid fa-route"></i> <span>Routes</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-clock"></i> <span>Time Schedule</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> <span>Fees</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h2><i class="fa-solid fa-map-location-dot"></i> Active Bus Routes</h2>
+        </div>
+
+        <div class="routes-grid">
+
+            <div class="route-card">
+                <div class="route-header">
+                    <span>Route 01</span>
+                    <i class="fa-solid fa-bus-simple"></i>
+                </div>
+                <div class="route-body">
+                    <div class="map-visual">
+                        <div class="location-label">Thiruvallur (Hub)</div>
+                        <div class="map-point start"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="map-line"></div>
+                        <div class="map-point end"><i class="fa-solid fa-flag-checked"></i></div>
+                        <div class="location-label end">Uthukkottai</div>
+                    </div>
+                    
+                    <div class="route-details">
+                        <span><i class="fa-solid fa-clock"></i> 1h 15m</span>
+                        <span><i class="fa-solid fa-users"></i> 45 Students</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="route-card">
+                <div class="route-header">
+                    <span>Route 02</span>
+                    <i class="fa-solid fa-bus-simple"></i>
+                </div>
+                <div class="route-body">
+                    <div class="map-visual">
+                        <div class="location-label">Thiruvallur (Hub)</div>
+                        <div class="map-point start"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="map-line"></div>
+                        <div class="map-point end"><i class="fa-solid fa-flag-checked"></i></div>
+                        <div class="location-label end">Sriperumbudur</div>
+                    </div>
+                    <div class="route-details">
+                        <span><i class="fa-solid fa-clock"></i> 55m</span>
+                        <span><i class="fa-solid fa-users"></i> 60 Students</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="route-card">
+                <div class="route-header">
+                    <span>Route 03</span>
+                    <i class="fa-solid fa-bus-simple"></i>
+                </div>
+                <div class="route-body">
+                    <div class="map-visual">
+                        <div class="location-label">Thiruvallur (Hub)</div>
+                        <div class="map-point start"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="map-line"></div>
+                        <div class="map-point end"><i class="fa-solid fa-flag-checked"></i></div>
+                        <div class="location-label end">Thiruthni</div>
+                    </div>
+                    <div class="route-details">
+                        <span><i class="fa-solid fa-clock"></i> 40m</span>
+                        <span><i class="fa-solid fa-users"></i> 35 Students</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
